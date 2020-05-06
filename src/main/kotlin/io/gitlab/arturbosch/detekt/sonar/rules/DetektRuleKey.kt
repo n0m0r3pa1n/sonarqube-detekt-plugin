@@ -13,12 +13,12 @@ import java.util.ServiceLoader
 
 val defaultConfig: Config = loadDefaultConfig()
 
-val allLoadedRules: List<Rule> = ServiceLoader.load(RuleSetProvider::class.java, Config::class.java.classLoader)
+val allLoadedRules: MutableList<Rule> = ServiceLoader.load(RuleSetProvider::class.java, Config::class.java.classLoader)
     .flatMap { loadRules(it) }
     .flatMap { (it as? MultiRule)?.rules ?: listOf(it) }
     .asSequence()
     .filterIsInstance<Rule>()
-    .toList()
+    .toMutableList()
 
 private fun loadRules(provider: RuleSetProvider): List<BaseRule> {
     val subConfig = defaultConfig.subConfig(provider.ruleSetId)
